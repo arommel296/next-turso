@@ -5,6 +5,8 @@ import { User, user } from "./user.type";
 import { userTable } from "../db/schema";
 import { eq, sql } from "drizzle-orm";
 import { NextResponse } from "next/server";
+import Error from "next/error";
+import { notFound } from "next/navigation";
 
 export class UserService {
     constructor() {
@@ -19,11 +21,16 @@ export class UserService {
         const listOfUsers = await db.select().from(userTable);
         const u = listOfUsers.find((user) => user.email === email);
 
-        if (u) NextResponse.json({ error: "User already exists" })
-        
+        if (u) {
+            // throw excepti('User already exists');
+            return Response.json({ error: "User already exists" })
+        }
         console.log("antes del return");
-
-        return await db.insert(userTable).values({ username: username, email: email, password: hashedPassword, role_id: role_id });
+        await db.insert(userTable).values({ username: username, email: email, password: hashedPassword, role_id: role_id });
+        // const rowsAffected = await db.insert(userTable).values({ username: username, email: email, password: hashedPassword, role_id: role_id });
+        // console.log(rowsAffected);
+        const newUser = new User(username, email, hashedPassword, role_id);
+        return newUser;
     }
 
     async findAllUsers() {
