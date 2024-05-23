@@ -35,7 +35,8 @@ export class UserService {
 
     async findAllUsers() {
         console.log(await db.select().from(userTable));
-        return await db.select().from(userTable);
+        const allUsers = await db.select().from(userTable);
+        return allUsers
     }
 
     async updateUser(userUpdated: User, id: number) {
@@ -74,10 +75,11 @@ export class UserService {
         // const getUser = allUser.find((user) => user.email === +email);
 
         if (!getUser) {
-            return `User with ${email} does not exits.`;
+            // return `User with ${email} does not exits.`;
+            return null;
         }
 
         const user = new User(getUser.username, getUser.email, getUser.password, getUser.id)
-        return user.jsonSerialize();
+        return user;
     }
 }

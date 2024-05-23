@@ -17,7 +17,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(request: NextRequest) {
     const us = new UserService();
-    const allUsers = us.findAllUsers();
+    const allUsers = await us.findAllUsers();
     return Response.json({users: allUsers})
 }
 
@@ -27,10 +27,13 @@ export async function POST(request: Request, res: Response) {
     const newUser = new User(data.username, data.email, data.password, data.role_id)
 
     try{
-        const createdUser = us.createUser(newUser);
-        return NextResponse.json({user: createdUser});
+        const createdUser = await us.createUser(newUser);
+        if (createdUser) {
+            return Response.json({user: newUser});
+        }
+        return Response.json({ error: 'The user could not be created' }, { status: 500 });
     } catch(error){
-        return NextResponse.json({ error: 'User not found by that email.' }, { status: 409 });
+        return Response.json({ error: 'User not found by that email.' }, { status: 409 });
     }
     
 

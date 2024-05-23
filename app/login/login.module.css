@@ -1,0 +1,12 @@
+form {
+    display: flex;
+    flex-direction: column;
+    align-content: center;
+    background-color: aliceblue;
+    align-items: center;
+}
+
+body{
+    display: flex;
+    flex-wrap: wrap;
+}
